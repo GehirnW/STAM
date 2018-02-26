@@ -93,8 +93,8 @@ $$ alpha19 = \begin{cases}
 ## alpha20
 $$ alpha20 = \frac{close - Delay(close,6)}{Delay(close,6)} $$
 
-## alpha21(??)
-
+## alpha21
+$$ alpha21 = RegBeta(Mean(close,6),close,6)$$
 
 ## alpha22
 $$ temp = \frac{close -Mean(close,6)}{Mean(close,6)}$$
@@ -270,7 +270,7 @@ $$ alpha53 = \frac{Count(close > Delay(close,1),12)}{12} * 100$$
 $$ temp = STD(abs(close - open) + (close - open),?) + Corr(close,open,10)$$
 $$ alpha54 = -1 * Rank(temp)$$
 
-## alpha55(???)
+## alpha55
 $$ temp1 = \frac{close - Delay(close,1) + \frac{close - open}{2} + Delay(close,1) - Delay(open,1}{abs(high - Delay(close,1))}$$
 $$ judge1 = (abs(high - Delay(close,1)) > abs(high - Delay(low,1)))$$
 $$ judge2 = (abs(low - Delay(close,1) > abs(high - Delay(close,1))))$$
@@ -279,9 +279,10 @@ $$ temp22 = abs(low - Delay(close,1)) $$
 $$ temp31 = abs(low - Delay(close,1)) + \frac{abs(high - Delay(close,1))}{2} +\frac{abs(Delay(close,1) - Delay(open,1))}{4}$$
 $$ temp32 = (abs(high - Delay(low,1)) + abs(Delay(close,1) - Delay(open,1))) * Max(abs(high - Delay(close,1)),abs(low - Delay(close,1)))$$
 $$ temp5 = \begin{cases}
-				(temp1 > abs(low - Delay(close,1))) & (temp21 > abs(high - Delay(low,1)) & (temp31 > abs(high - Delay(close,1)))),& temp1$$
+				(temp1 > abs(low - Delay(close,1))) & (temp21 > abs(high - Delay(low,1)) & (temp31 > abs(high - Delay(close,1)))),& temp1
+				\end{cases}$$
 
-## alpha56(??)
+## alpha56
 $$ r1 = Rank(open - TsMin(open,12))$$
 $$ corr = Corr(Sum(\frac{high+low}{2},19),Sum(Mean(volume,40),19),13)$$
 $$ alpha56 = (r1 < Rank(corr))$$
@@ -545,8 +546,10 @@ $$ r2 = Rank(Corr(Sum(close,5),Sum(close,20),2))$$
 $$ alpha113 = r1 * r2 * -1$$
 
 ## alpha114(??)
-$$ r1 = Rank(Delay(\frac{high - low}{Mean(close,5)},2))$$
-$$ r2 = $$
+$$ r1 = Rank(Delay(\frac{high - low}{Mean(close,5)},2)，5)$$
+$$ temp = \frac{\frac{high - low}{Mean(close,5)}}{vwap - close}$$
+$$ r2 = Rank(Rank(volume,5)/temp,5)$$
+$$ alpha114 = r1  +  r2 $$
 
 ## alpha115
 $$ r1 = Rank(Corr(high * 0.9 + low * 0.1, Mean(volume,30),10))$$
@@ -810,15 +813,17 @@ $$ alpha171 = -1 *\frac{(low - close) * (open ^ 5)}{(close - high)*(close ^ 5)}$
 
 ## alpha172
 $$ temp = \begin{cases}
-				1, &(LD>0,LD>HD) OR (HD>0,HD>LD) \\\$$
-				0, else
+				1, &(LD>0,LD>HD) OR (HD>0,HD>LD) \\\
+				0, &else
 			\end{cases}
+			$$
 ### another
 $$ temp = \begin{cases}
 				1, &(LD>0,LD>HD) OR )\\\
-				-1, & (HD>0,HD>LD) \\\$$
-				0, else
+				-1, & (HD>0,HD>LD) \\\
+				0, &else
 			\end{cases}
+			$$
 $$ alpha172 = Mean(temp,6)$$
 
 ## alpha173(?)
@@ -886,9 +891,10 @@ $$ alpha185 = Rank(-1 * (1 - \frac{open}{close})^2)$$
 
 ## alpha186
 $$ temp = \begin{cases}
-				1, &(LD>0,LD>HD) OR (HD>0,HD>LD) \\\$$
-				0, else
+				1, &(LD>0,LD>HD) OR (HD>0,HD>LD) \\\
+				0, &else
 			\end{cases}
+			$$
 $$ alpha186 = \frac{Mean(temp,6) + Delay(Mean(temp,6),6)}{2}$$
 
 ## alpha187
@@ -906,7 +912,13 @@ $$ alpha188 = \frac{high - low - temp}{temp} * 100$$
 $$ alpha189 = Mean(abs(close - Mean(close,6)),6)$$
 
 ## alpha190
-$$ $$
+$$ temp1 = \frac{close}{Delay(close,1)} $$
+$$ temp2 = \frac{close}{Delay(close,19)} $$
+$$ temp3 = Count(temp1,temp2,20)$$
+$$ tep = power(temp1 - temp2,2)$$
+$$ temp4 = SUMIF(tep,20,temp1,temp2)$$
+$$ temp5 = SUMIF(tep,20,temp2,temp1)$$
+$$ alpha190 = LN(\frac{temp3 * temp4}{temp5 * temp6} )$$
 
 ## alpha191
 $$ alpha191 = Corr(Mean(volume,20),low,5) + \frac{high + low}{2} - close$$

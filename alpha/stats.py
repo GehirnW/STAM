@@ -527,6 +527,7 @@ def RegBeta(mode,df1,df2,num):
         for k in range(np.size(df1_unstack,1)):
             Y = pd.DataFrame(df_temp_A.iloc[:,k])
             if mode != 1:
+                Y = Y.dropna()
                 if len(Y) < num/2:
                     beta_temp.iloc[0,k] = np.nan
                 else:
@@ -536,9 +537,17 @@ def RegBeta(mode,df1,df2,num):
                     beta_temp.iloc[0,k] = regr.coef_[0,0]
             else:
                 X = pd.DataFrame(df_temp_B.iloc[:,0])
-                regr = linear_model.LinearRegression()
-                regr.fit(X,Y)
-                beta_temp.iloc[0,k] = regr.coef_[0,0]          
+                xy = X.copy()
+                xy['y'] = Y
+                xy.columns = ['x','y']
+                xy_temp = xy.dropna()
+                if np.size(xy_temp,0) < 10:
+                    beta_temp.iloc[0,k] = np.nan
+                else:
+                    regr = linear_model.LinearRegression()
+                    regr.fit(pd.DataFrame(xy_temp['x']),pd.DataFrame(xy_temp['y']))
+                    beta_temp.iloc[0,k] = regr.coef_[0,0] 
+            print(k)         
         beta = pd.concat([beta,beta_temp],axis = 0)
     if mode == 1:
         beta.columns  = pd.DataFrame(df1_unstack.columns.tolist()).iloc[:,0]
@@ -581,17 +590,3 @@ def RegResi(mode,df1,df2,num):
     return pd.DataFrame(beta_stack)
            
             
-    
-    
-    
-    
-    
-
-    
-    
-    
-#if __name__ == '__main__':       
-#    a1 = get_stockdata_from_sql('2005-01-04','Open') 
-#    a2 = get_stockdata_from_sql('2005-01-05','Open') 
-#    a = pd.concat([a2,a1],axis = 1)
-#    aa = get_tradedate('2005-01-04','2017-01-01' )

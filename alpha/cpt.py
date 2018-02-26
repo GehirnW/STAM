@@ -98,9 +98,9 @@ a.to_csv(filename)
 """
 something wrong:RegBeta function
 """
-a = alpha.alpha21()
-filename =  '..\\alpha\\data\\21.csv'
-a.to_csv(filename)
+#a = alpha.alpha21()
+#filename =  '..\\alpha\\data\\21.csv'
+#a.to_csv(filename)
 
 a = alpha.alpha22()
 filename =  '..\\alpha\\data\\22.csv'
@@ -117,13 +117,6 @@ a.to_csv(filename)
 a = alpha.alpha26()
 filename =  '..\\alpha\\data\\26.csv'
 a.to_csv(filename)
-
-"""
-alpha27 is uncompleted
-"""
-#a = alpha.alpha27()
-#filename =  '..\\alpha\\data\\27.csv'
-#a.to_csv(filename)
 
 a = alpha.alpha28()
 filename =  '..\\alpha\\data\\28.csv'
@@ -288,12 +281,9 @@ a = alpha.alpha74()
 filename =  '..\\alpha\\data\\74.csv'
 a.to_csv(filename)
 
-"""
-something wrong with alpha75
-"""
-#a = alpha.alpha75()
-#filename =  '..\\alpha\\data\\75.csv'
-#a.to_csv(filename)
+a = alpha.alpha75()
+filename =  '..\\alpha\\data\\75.csv'
+a.to_csv(filename)
 
 a = alpha.alpha76()
 filename =  '..\\alpha\\data\\76.csv'
@@ -435,9 +425,10 @@ a = alpha.alpha113()
 filename =  '..\\alpha\\data\\113.csv'
 a.to_csv(filename)
 
-"""
-alpha114 is uncompleted
-"""
+a = alpha.alpha114()
+filename =  '..\\alpha\\data\\114.csv'
+a.to_csv(filename)
+
 a = alpha.alpha115()
 filename =  '..\\alpha\\data\\115.csv'
 a.to_csv(filename)
@@ -549,9 +540,7 @@ alpha147,RegBeta function
 #a = alpha.alpha147()
 #filename =  '..\\alpha\\data\\147.csv'
 #a.to_csv(filename)
-"""
-something wrong: has been modified
-"""
+
 a = alpha.alpha148()
 filename =  '..\\alpha\\data\\148.csv'
 a.to_csv(filename)
@@ -731,9 +720,6 @@ a.to_csv(filename)
 with the function of DecayLinear, compute as a part
 """
 
-
-
-
 begin = ['2005-01-01','2006-10-01','2008-10-01','2010-10-01','2012-10-01','2014-10-01','2016-10-01']
 end = ['2007-12-31','2009-12-31','2011-12-31','2013-12-31','2015-12-31','2017-12-31','2017-12-31']
 for i in range(len(begin)):
@@ -743,6 +729,11 @@ for i in range(len(begin)):
     a = alpha.alpha25()
     filename =  '..\\alpha\\data_temp\\25_' + str(i) + '.csv'
     a.to_csv(filename)
+
+    # alpha27, backward 2 months
+    a = alpha.alpha27()
+    filename =  '..\\alpha\\data_temp\\27_' + str(i) + '.csv'
+    a.to_csv(filename)    
     
     # alpha35 backward 1 months
     a = alpha.alpha35()
@@ -819,6 +810,11 @@ for i in range(len(begin)):
     filename =  '..\\alpha\\data_temp\\140_' + str(i) + '.csv'
     a.to_csv(filename)
     
+    # alpha149,function of RegBeta,252
+    a = alpha.alpha149()
+    filename =  '..\\alpha\\data_temp\\149_' + str(i) + '.csv'
+    a.to_csv(filename)    
+    
     # alpha156, backward 1 months
     a = alpha.alpha156()
     filename =  '..\\alpha\\data_temp\\156_' + str(i) + '.csv'
@@ -828,7 +824,7 @@ for i in range(len(begin)):
 combine the parts as whole
 """
 
-name_list = [25,35,39,44,61,64,73,77,87,92,119,124,125,130,138,140,156]
+name_list = [25,27,35,39,44,61,64,73,77,87,92,119,124,125,130,138,140,156]
 for i in range(len(name_list)):
     a = pd.DataFrame([])
     for j in range(len(begin)):
@@ -840,4 +836,45 @@ for i in range(len(name_list)):
     a = a.drop_duplicates()
     filename1 = '..\\alpha\\data\\' + str(i) + '.csv'
     a.csv(filename1)
-        
+
+"""
+with the function of Regress, compute as a part
+"""      
+begin = ['2005-01-01','2006-10-01','2007-10-01','2008-10-01','2009-10-01','2010-10-01',\
+         '2011-10-01','2012-10-01','2013-10-01','2014-10-01','2015-10-01','2016-10-01']
+end = ['2006-12-31','2007-12-31','2008-12-31','2009-12-31','2010-12-31','2011-12-31'\
+       ,'2012-12-31','2013-12-31','2014-12-31','2015-12-31','2016-12-31','2017-12-31']
+for i in range(len(begin)):
+    alpha = stAlpha(begin[i],end[i])
+    
+    # alpha21, backward 1 month
+    a = alpha.alpha21()
+    filename = '..\\alpha\\data_temp\\21_' + str(i) + '.csv'
+    a.to_csv(filename)
+    
+    # alpha116,backward 2 month
+    a = alpha.alpha116()
+    filename = '..\\alpha\\data_temp\\116_' + str(i) + '.csv'
+    a.to_csv(filename)    
+    
+    # alpha147,backward 1 month
+    a = alpha.alpha147()
+    filename = '..\\alpha\\data_temp\\147_' + str(i) + '.csv'
+    a.to_csv(filename)      
+
+"""
+combine the parts as whole
+"""
+
+name_list = [21,116,147]
+for i in range(len(name_list)):
+    a = pd.DataFrame([])
+    for j in range(len(begin)):
+        filename = '..\\alpha\\data_temp\\' + str(i) \
+                    + '_' + str(j) + '.csv'
+        temp = pd.read_csv(filename)
+        temp_columns = ['date','secID','alpha']
+        a = pd.concat([a,temp], axis = 0)
+    a = a.drop_duplicates()
+    filename1 = '..\\alpha\\data\\' + str(i) + '.csv'
+    a.csv(filename1)

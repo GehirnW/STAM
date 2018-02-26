@@ -9,7 +9,7 @@ Created on Fri Jan 26 15:39:02 2018
 import pandas as pd
 import numpy as np
 from numpy.matlib import repmat
-from stats1 import get_stockdata_from_sql,get_tradedate,Corr,Delta,Rank,Cross_max,\
+from stats import get_stockdata_from_sql,get_tradedate,Corr,Delta,Rank,Cross_max,\
 Cross_min,Delay,Sum,Mean,STD,TsRank,TsMax,TsMin,DecayLinear,Count,SMA,Cov,DTM,DBM,\
 Highday,Lowday,HD,LD,RegBeta,RegResi,SUMIF,get_indexdata_from_sql,timer
 
@@ -424,7 +424,10 @@ class stAlpha(object):
         temp2 = pd.DataFrame((data['close'] - data['close_delay6'])/data['close_delay6'] * 100)
         data_temp = pd.concat([temp1,temp2],axis = 1,join = 'inner')
         data_temp.columns = ['temp1','temp2']
-        
+        temp = pd.DataFrame(data_temp['temp1'] + data_temp['temp2'])
+        alpha = DecayLinear(temp,12)
+        alpha.columns = ['alpha27']
+        return alpha
         
     @timer    
     def alpha28(self):
@@ -1196,9 +1199,11 @@ class stAlpha(object):
         close_index = self.close_index
         open_index = self.open_index
         data1 = pd.concat([close,Open], axis = 1, join = 'inner')
+        data1.columns = ['close','open']
         data1['temp'] = 1
-        data1['temp'][data1['Close'] <= data1['Open']] = 0
+        data1['temp'][data1['close'] <= data1['open']] = 0
         data2 = pd.concat([close_index,open_index], axis = 1, join = 'inner')
+        data2.columns = ['close','open']
         data2['tep'] = 1
         data2['tep'][data2['close'] > data2['open']] = 0
         temp = data1['temp'].unstack()    
@@ -1206,7 +1211,7 @@ class stAlpha(object):
         tep1 = repmat(tep,1,np.size(temp,1))
         data3 = temp * tep1
         temp_result = data3.rolling(50,min_periods = 50).sum()
-        tep_result = temp.rolling(50,min_periods = 50).sum()
+        tep_result = tep.rolling(50,min_periods = 50).sum()
         tep2_result = np.matlib.repmat(tep_result,1,np.size(temp,1))
         result = temp_result/tep2_result
         alpha = pd.DataFrame(result.stack())
@@ -1791,7 +1796,33 @@ class stAlpha(object):
         alpha = pd.DataFrame(r['r1'] * r['r2'] * -1)
         alpha.columns = ['alpha113']
         return alpha
-    
+    @timer
+    def alpha114(self):
+        close = self.close
+        high = self.high
+        low = self.low
+        volume = self.volume
+        vwap = self.vwap
+        close_mean = Mean(close,5)
+        data = pd.concat([high,low,close_mean], axis = 1, join = 'inner')
+        data.columns = ['high','low','close_mean']
+        temp = pd.DataFrame(data['high'] - data['low'] / data['close_mean'])
+        temp_delay = Delay(temp,2)
+        r1 = TsRank(temp_delay,5)
+        temp1 = pd.concat([temp,vwap,close], axis = 1, join = 'inner')
+        temp1.columns = ['temp','vwap','close']
+        tep = pd.DataFrame(temp1['temp']/(temp1['vwap'] - temp1['close']))
+        r2 = TsRank(volume,5)
+        data2 = pd.concat([r2,tep], axis = 1, join  = 'inner')
+        data2.columns = ['r2','tep']
+        tep1 = pd.DataFrame(data2['r2']/data2['tep'])
+        r3 = TsRank(tep1,5)
+        r = pd.concat([r1,r3],axis = 1, join  = 'inner')
+        r.columns = ['r1','r3']
+        alpha = pd.DataFrame(r['r1'] + r['r3'])
+        alpha.columns = ['alpha114']
+        return alpha
+        
     @timer    
     def alpha115(self):
         high = self.high
@@ -2403,6 +2434,7 @@ class stAlpha(object):
         data['delta'] = data['close'] / data['close_delay'] - 1
         df1 = pd.DataFrame(data['delta'])
         df2 = pd.DataFrame(data_index['delta'])
+        
         alpha = RegBeta(1,df1,df2,252)
         alpha.columns = ['alpha149']
         return alpha
@@ -3146,123 +3178,4 @@ class stAlpha(object):
 #    alpha  = stAlpha('2005-01-01','2017-12-31')
     
     
-#    begin = ['2005-01-01','2007-01-01','2009-01-01','2011-01-01','2013-01-01','2015-01-01','2017-01-01']
-#    end = ['2007-12-31','2009-12-31','2011-12-31','2013-12-31','2015-12-31','2017-12-31','2017-12-31']
-#    for i in range(3,len(begin)):
-#
-#        alpha = stAlpha(begin[i],end[i])
-#        a = alpha.alpha92()
-#        filename = 'C:\\Python\\shortTermAlpha\\data\\92_' + str(i) + '.csv'
-#        a.to_csv(filename)
-#
-#        a = alpha.alpha140()
-#        filename = 'C:\\Python\\shortTermAlpha\\data\\140_' + str(i) + '.csv'
-#        a.to_csv(filename)        
-        
 
-        
-#        a = alpha.alpha114()
-#        filename = 'C:\\Python\\shortTermAlpha\\data\\114_' + str(i) + '.csv'
-#        a.to_csv(filename) 
-        
-
-        
-#        a = alpha.alpha156()
-#        filename = 'C:\\Python\\shortTermAlpha\\data\\156_' + str(i) + '.csv'
-#        a.to_csv(filename)
-    
-#    a = dir(alpha)
-#    for i in range(25,26):
-#        a = exec("alpha.a[i]()")
-#        a.to_csv("\\User\\joyce\\Desktop\\jiahe\\Alpha\\new\\1.csv")
-#    a = alpha.alpha27()
-#    filename =  'C:\\Python\\shortTermAlpha\\data\\27.csv'
-#    a.to_csv(filename)
-#    a2 = alpha.alpha2()
-#    filename2 =  'C:\\Python\\shortTermAlpha\\data\\2.csv'
-#    a2.to_csv(filename2)
-#    a3 = alpha.alpha3()
-#    filename3 =  'C:\\Python\\shortTermAlpha\\data\\3.csv'
-#    a3.to_csv(filename3)
-#    a4 = alpha.alpha4()
-#    filename4 =  'C:\\Python\\shortTermAlpha\\data\\4.csv'
-#    a4.to_csv(filename4)
-#    a5 = alpha.alpha5()
-#    filename5 =  'C:\\Python\\shortTermAlpha\\data\\5.csv'
-#    a5.to_csv(filename5)
-#    a6 = alpha.alpha6()
-#    filename6 =  'C:\\Python\\shortTermAlpha\\data\\6.csv'
-#    a6.to_csv(filename6)
-#    a7 = alpha.alpha7()
-#    filename7 =  'C:\\Python\\shortTermAlpha\\data\\7.csv'
-#    a7.to_csv(filename7)
-#    a8 = alpha.alpha8()
-#    filename8 =  'C:\\Python\\shortTermAlpha\\data\\8.csv'
-#    a8.to_csv(filename8)
-#    a9 = alpha.alpha9()
-#    filename9 =  'C:\\Python\\shortTermAlpha\\data\\9.csv'
-#    a9.to_csv(filename9)
-#    a10 = alpha.alpha10()
-#    filename10 =  'C:\\Python\\shortTermAlpha\\data\\10.csv'
-#    a10.to_csv(filename10)
-    
-    
-#    a11 = alpha.alpha11()
-#    filename11 =  'C:\\Python\\shortTermAlpha\\data\\11.csv'
-#    a11.to_csv(filename11)
-#    a12 = alpha.alpha12()
-#    filename12 =  'C:\\Python\\shortTermAlpha\\data\\12.csv'
-#    a12.to_csv(filename12)
-#    a13 = alpha.alpha13()
-#    filename13 =  'C:\\Python\\shortTermAlpha\\data\\13.csv'
-#    a13.to_csv(filename13)
-#    a14 = alpha.alpha14()
-#    filename14 =  'C:\\Python\\shortTermAlpha\\data\\14.csv'
-#    a14.to_csv(filename14)
-#    a15 = alpha.alpha15()
-#    filename15 =  'C:\\Python\\shortTermAlpha\\data\\15.csv'
-#    a15.to_csv(filename15)
-#    a16 = alpha.alpha16()
-#    filename16 =  'C:\\Python\\shortTermAlpha\\data\\16.csv'
-#    a16.to_csv(filename16)
-#    a17 = alpha.alpha17()
-#    filename17 =  'C:\\Python\\shortTermAlpha\\data\\17.csv'
-#    a17.to_csv(filename17)
-#    a18 = alpha.alpha18()
-#    filename18 =  'C:\\Python\\shortTermAlpha\\data\\18.csv'
-#    a18.to_csv(filename18)
-#    a19 = alpha.alpha19()
-#    filename19 =  'C:\\Python\\shortTermAlpha\\data\\19.csv'
-#    a19.to_csv(filename19)
-#    a20 = alpha.alpha20()
-#    filename20 =  'C:\\Python\\shortTermAlpha\\data\\20.csv'
-#    a20.to_csv(filename20)
-
-#    a21 = alpha.alpha21()
-#    filename21 =  'C:\\Python\\shortTermAlpha\\data\\21.csv'
-#    a21.to_csv(filename21)
-#    a22 = alpha.alpha22()
-#    filename22 =  'C:\\Python\\shortTermAlpha\\data\\22.csv'
-#    a22.to_csv(filename22)
-#    a23 = alpha.alpha23()
-#    filename23 =  'C:\\Python\\shortTermAlpha\\data\\23.csv'
-#    a23.to_csv(filename23)
-#    a24 = alpha.alpha24()
-#    filename24 =  'C:\\Python\\shortTermAlpha\\data\\24.csv'
-#    a24.to_csv(filename24)
-#    a = alpha.alpha25()
-#    filename =  '\\User\\joyce\\Desktop\\jiahe\\Alpha\\new\\25.csv'
-#    a.to_csv(filename)
-#    
-#    a26 = alpha.alpha26()
-#    filename26 =  'C:\\Python\\shortTermAlpha\\data\\26.csv'
-#    a26.to_csv(filename26)
-#    a27 = alpha.alpha27()
-#    filename27 =  'C:\\Python\\shortTermAlpha\\data\\27.csv'
-#    a27.to_csv(filename27)
-#    a28 = alpha.alpha28()
-#    filename28 =  'C:\\Python\\shortTermAlpha\\data\\28.csv'
-#    a28.to_csv(filename28)
-#    a29 = alpha.alpha29()
-#    filename29 =  'C:\\Python\\shortTermAlpha\\data\\29.csv'
-#    a29.to_csv(filename29)
