@@ -1,7 +1,7 @@
 
 #短周期价量因子
 ## alpha1
-![\Large r1 = rank(Delta(Ln(volume),1))](https://latex.codecogs.com/svg.latex?x%3D%5Cfrac%7B-b%5Cpm%5Csqrt%7Bb%5E2-4ac%7D%7D%7B2a%7D)
+<img src="http://latex.codecogs.com/svg.latex? r1 = rank(Delta(Ln(volume),1))" border="0"/>
 
 <img src="https://latex.codecogs.com/svg.latex?\Large&space; r2 = rank(\frac{close-open}{open})" />
 
