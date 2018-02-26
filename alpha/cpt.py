@@ -831,9 +831,10 @@ for i in range(len(name_list)):
         filename = '..\\alpha\\data_temp\\' + str(i) \
                     + '_' + str(j) + '.csv'
         temp = pd.read_csv(filename)
-        temp_columns = ['date','secID','alpha']
         a = pd.concat([a,temp], axis = 0)
     a = a.drop_duplicates()
+    alpha_name = 'alpha' + str(name_list[i])
+    a.columns = ['date','secID',alpha_name]    
     filename1 = '..\\alpha\\data\\' + str(i) + '.csv'
     a.csv(filename1)
 
@@ -873,8 +874,9 @@ for i in range(len(name_list)):
         filename = '..\\alpha\\data_temp\\' + str(i) \
                     + '_' + str(j) + '.csv'
         temp = pd.read_csv(filename)
-        temp_columns = ['date','secID','alpha']
         a = pd.concat([a,temp], axis = 0)
     a = a.drop_duplicates()
+    alpha_name = 'alpha' + str(name_list[i])
+    a.columns = ['date','secID',alpha_name]
     filename1 = '..\\alpha\\data\\' + str(i) + '.csv'
     a.csv(filename1)
