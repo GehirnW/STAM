@@ -1,9 +1,0 @@
-markdown: kramdown
-kramdown:
-    input: GFM
-highlighter: rouge
-permalink: /:year/:month/:day/:title.html
-name: "SHORT TERM ALPHA FACTORS"
-author: "Pan YQ"
-disqus: "Pan YQ"
-navigations:
