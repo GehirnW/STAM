@@ -1,12 +1,14 @@
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
 #短周期价量因子
 ## alpha1
-$$ r1 = rank(Delta(Ln(volume),1))$$
-$$ r2 = rank(\frac{close-open}{open})$$
-$$ alpha1 = -1 * Corr(r1,r2,6)$$
+![equation](http://latex.codecogs.com/gif.latex?r1%20%3D%20rank%28Delta%28Ln%28volume%29%2C1%29%29)
+
+<img src="https://latex.codecogs.com/svg.latex?\Large&space; r2 = rank(\frac{close-open}{open})" />
+
+<img src="https://latex.codecogs.com/svg.latex?\Large&space; alpha1 = -1 * Corr(r1,r2,6)" />
 
 ## alpha2
-$$ alpha2 = -1 * Delta(\frac{(close - low) -(high - close)}{high - low},1) $$
+<img src="https://latex.codecogs.com/svg.latex?\Large&space; alpha2 = -1 * Delta(\frac{(close - low) -(high - close)}{high - low},1) " />
 
 ## alpha3
 $$ temp = \begin{cases}
@@ -15,6 +17,7 @@ $$ temp = \begin{cases}
 			close - Max(high,Decay(close,1)),& close < Decay(close,1)
 			\end{cases}
 			$$
+			
 $$alpha3 = Sum(temp,6)$$
 
 ## alpha4
@@ -28,7 +31,9 @@ $$ alpha4 = \begin{cases}
 
 ## alpha5
 $$ r1 = TsRank(volume,5)$$
+
 $$ r2 = TsRank(high,5) $$
+
 $$ alpha5 = -1 * TsMax(Corr(r1,r2,5),3)$$
 ## alpha6
 $$alpha6 = Rank(sign(Delta((open * 0.85 + high * 0.15),4))) $$
