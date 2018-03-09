@@ -11,7 +11,7 @@ import numpy as np
 from numpy.matlib import repmat
 from stats import get_stockdata_from_sql,get_tradedate,Corr,Delta,Rank,Cross_max,\
 Cross_min,Delay,Sum,Mean,STD,TsRank,TsMax,TsMin,DecayLinear,Count,SMA,Cov,DTM,DBM,\
-Highday,Lowday,HD,LD,RegBeta,RegResi,SUMIF,get_indexdata_from_sql,timer
+Highday,Lowday,HD,LD,RegBeta,RegResi,SUMIF,get_indexdata_from_sql,timer,get_fama
 
 
 class stAlpha(object):
@@ -28,6 +28,8 @@ class stAlpha(object):
         self.ret = get_stockdata_from_sql(1,begin,end,'Pctchg')
         self.close_index = get_indexdata_from_sql(1,begin,end,'close','000001.SH')
         self.open_index = get_indexdata_from_sql(1,begin,end,'open','000001.SH')
+#        self.mkt = get_fama_from_sql()
+
     @timer
     def alpha1(self):
         volume = self.volume
@@ -48,6 +50,7 @@ class stAlpha(object):
         corr = Corr(rank,6)
         alpha = corr
         alpha.columns = ['alpha1']
+        
         return alpha
         
     @timer    
@@ -459,7 +462,12 @@ class stAlpha(object):
         alpha.columns = ['alpha29']
         return alpha
     
-    #def alpha30(begin,end):
+    @timer    
+    def alpha30(self):
+        close = self.close
+        close_delay = Delay(close,1)
+        
+        
     @timer
     def alpha31(self):
         close = self.close

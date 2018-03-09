@@ -1,14 +1,12 @@
-
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 #短周期价量因子
 ## alpha1
-![equation](http://latex.codecogs.com/gif.latex?r1%20%3D%20rank%28Delta%28Ln%28volume%29%2C1%29%29)
-
-<img src="https://latex.codecogs.com/svg.latex?\Large&space; r2 = rank(\frac{close-open}{open})" />
-
-<img src="https://latex.codecogs.com/svg.latex?\Large&space; alpha1 = -1 * Corr(r1,r2,6)" />
+$$ r1 = rank(Delta(Ln(volume),1))$$
+$$ r2 = rank(\frac{close-open}{open})$$
+$$ alpha1 = -1 * Corr(r1,r2,6)$$
 
 ## alpha2
-<img src="https://latex.codecogs.com/svg.latex?\Large&space; alpha2 = -1 * Delta(\frac{(close - low) -(high - close)}{high - low},1) " />
+$$ alpha2 = -1 * Delta(\frac{(close - low) -(high - close)}{high - low},1) $$
 
 ## alpha3
 $$ temp = \begin{cases}

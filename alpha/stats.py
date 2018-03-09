@@ -108,6 +108,36 @@ def get_tradedate(begin, end):
     finally:
         if conn:
             conn.close()
+            
+def get_fama(begin,end,name,index):
+    """
+    get fama factor from sql 
+    Params:
+        begin:
+            str,eg:"1990-01-01"
+        end:
+            str:eg:"2017-12-31"
+        index:
+            str, index id ,eg :'000300.SH'
+        name:
+            the name of fama factors ['SMB','HML','MKT']
+    """
+    try:
+        conn = pymysql.connect(**config)
+        cursor = conn.cursor()
+        query = "SELECT trade_date,%s FROM fama_factor WHERE \
+                    stock_id = '%s' AND trade_date >= '%s' AND trade_date <= '%s';"\
+                    %(name,index,begin,end)
+        cursor.execute(query)
+        data = pd.DataFrame(list(cursor.fetchall()))
+        data.columns = ['date',name]
+        return data
+    finally:
+        if conn:
+            conn.close()
+        
+        
+            
 @timer
 def Corr(df,num):
     """
